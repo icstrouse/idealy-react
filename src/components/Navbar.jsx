@@ -2,14 +2,14 @@ import Nav from 'react-bootstrap/Nav';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
-function Navbar() {
+function Navbar({ activeKey }) {
   return (
     <Nav
-      className="navbar navbar-expand-lg navbar-dark bg-primary mt-5"
-      activeKey="/"
+      className="navbar navbar-expand-lg navbar-dark bg-primary"
+      activeKey={activeKey}
     >
-      <div className="container-fluid">
-        <Nav.Link className="navbar-brand" href="#">
+      <div className="container">
+        <Nav.Link className="navbar-brand" href="/">
           <img src="./logo1.png" width="100" height="50" className="d-inline-block align-top" alt="Bootstrap" loading="lazy"></img>
         </Nav.Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent2" aria-controls="navbarSupportedContent2" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,7 +18,7 @@ function Navbar() {
         <div className="collapse navbar-collapse" id="navbarSupportedContent2">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <Nav.Link className="nav-link active" aria-current="page" href="/">Home</Nav.Link>
+              <Nav.Link className="nav-link" aria-current="page" href="/">Home</Nav.Link>
             </li>
             <li className="nav-item">
               <Nav.Link className="nav-link" href="/review">Review</Nav.Link>

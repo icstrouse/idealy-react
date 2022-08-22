@@ -1,8 +1,16 @@
+import { useEffect, useState } from 'react';
+import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 
 import Navbar from '../components/Navbar.jsx';
 
-import ideas from '../ideas';
+import ideasJs from '../ideas';
+
+function getIdeas() {
+  return new Promise((resolve, reject) => {
+    resolve(ideasJs);
+  });
+}
 
 function IdeaCard({ idea }) {
   const createdDate = new Date(idea.created_date);
@@ -29,14 +37,28 @@ function IdeaCard({ idea }) {
 // Filter by tag
 
 function Review() {
+  const [ideas, setIdeas] = useState([]);
+    
+  useEffect(() => {
+    getIdeas()
+      .then(setIdeas);
+  }, [])
+
+  console.log(ideas)
+
   return (
-    <div>
-      <Navbar />
+    <>
+      <Navbar activeKey="/review" />
 
-      <h1 className="m-4">Review Ideas</h1>
+      <Container>
 
-      {ideas.map(idea => <IdeaCard idea={idea} />)}
-    </div>
+        <h1 className="m-4">Review Ideas</h1>
+
+        {ideas.map(idea =>
+          <IdeaCard key={idea.id} idea={idea} />
+        )}
+      </Container>
+    </>
   );
 }
 
