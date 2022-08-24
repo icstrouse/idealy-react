@@ -1,13 +1,27 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useMutation, gql } from '@apollo/client';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
 import Navbar from '../components/Navbar.jsx';
 
-// To do:
-// Option for tag
-// Automatically saves time and location
+const ADD_IDEA = gql`
+  mutation AddIdea($title: String!, $description: String!, $createdDate: String!, $createdPlace: [Float]!, $type: String!, $tags: [String], $isPublic: Boolean) {
+    addIdea(title: $title, description: $description, created_date: $createdDate, created_place: $createdPlace, type: $type, tags: $tags, isPublic: $isPublic) {
+      _id
+      title
+      description
+      created_date
+      created_place
+      type
+      tags
+      parent
+      isPublic
+      archived
+    }
+  }
+`;
 
 function Home() {
   const [title, setTitle] = useState('');
@@ -15,10 +29,27 @@ function Home() {
   const [type, setType] = useState('');
   const [tags, setTags] = useState('');
 
+  const [addIdea, { loading, error }] = useMutation(ADD_IDEA);
+
+  if (loading) return 'Submitting...';
+  if (error) return `Submission error! ${error.message}`;
+
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    console.log('Submitting: ', title, description, type, tags);
+    
+    const date = new Date();
+    const variables = {
+      title,
+      description,
+      createdDate: date.toString(),
+      createdPlace: [40.01431655883789, -104.9876937866211],
+      type,
+      tags: [tags],
+      isPublic: true,
+    }
+    
+    console.log('Submitting: ', variables);
+    addIdea({ variables });
 
     setTitle('');
     setDescription('');
@@ -29,9 +60,7 @@ function Home() {
   return (
     <>
       <Navbar activeKey="/" />
-      
       <Container className="text-center">
-
         <h1 className="m-4">Enter an Idea</h1>
 
         <Form className="m-4">
@@ -79,3 +108,8 @@ function Home() {
 }
 
 export default Home;
+
+
+// To do:
+// Option for tag
+// Automatically saves time and location

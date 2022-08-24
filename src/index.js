@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { ApolloClient, InMemoryCache, ApolloProvider, gql } from '@apollo/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './index.css';
@@ -9,20 +10,26 @@ import Review from './screens/Review';
 import Develop from './screens/Develop';
 import reportWebVitals from './reportWebVitals';
 
+const client = new ApolloClient({
+  uri: 'http://localhost:4000/',
+  cache: new InMemoryCache(),
+});
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="review" element={<Review />} />
-        <Route path="develop" element={<Develop />}>
-          <Route path=":ideaId" element={<Develop />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <ApolloProvider client={client}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="review" element={<Review />} />
+          <Route path="develop" element={<Develop />}>
+            <Route path=":ideaId" element={<Develop />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </ApolloProvider>
   </React.StrictMode>
 );
 
