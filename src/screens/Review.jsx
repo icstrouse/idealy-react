@@ -27,7 +27,11 @@ function IdeaCard({ idea }) {
   return (
     <Card className="m-4">
       <Card.Header>
-        <Card.Title className="pt-2">{idea.title}</Card.Title>
+        <Card.Title className="pt-2">
+          <a href={`/develop/${idea._id}`}>
+            {idea.title}
+          </a>
+        </Card.Title>
       </Card.Header>
       <Card.Body>
         <Card.Text className="card-text">{idea.description}</Card.Text>

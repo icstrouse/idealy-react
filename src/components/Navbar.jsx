@@ -10,7 +10,7 @@ function Navbar({ activeKey }) {
     >
       <div className="container">
         <Nav.Link className="navbar-brand" href="/">
-          <img src="./logo1.png" width="100" height="50" className="d-inline-block align-top" alt="Bootstrap" loading="lazy"></img>
+          <img src="./logo1.png" width="100" height="50" className="d-inline-block align-top" alt="Idea.ly" loading="lazy"></img>
         </Nav.Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent2" aria-controls="navbarSupportedContent2" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
