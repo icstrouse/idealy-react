@@ -24,21 +24,8 @@ function ThotList({ parent, ideaId, thots, showNew }) {
             <NewThot key={'0'} ideaId={ideaId} parent={parent} />
           </li>
         </Form>
-        : null
-      }
+      : null}
     </ul> 
-  )
-}
-
-function ThotFormControl({ value, onChange, submitThotText }) {
-  return (
-    <Form.Control
-      plaintext
-      type="text"
-      value={value}
-      onChange={e => onChange(e.target.value)}
-      onBlur={e => submitThotText()}
-    />
   )
 }
 
@@ -47,6 +34,7 @@ function Thot({ thot, inner }) {
 
   const [thotText, setThotText] = useState('');
   const [showNew, setShowNew] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   
   const [updateThotText, { loading, error }] = useMutation(UPDATE_THOT_TEXT);
 
@@ -65,15 +53,19 @@ function Thot({ thot, inner }) {
       <>
         <Form>
           <li>
-            <ThotFormControl
+            <Form.Control
+              plaintext
+              type="text"
               value={thotText}
-              onChange={setThotText}
-              submitThotText={submitThotText}
+              onChange={e => setThotText(e.target.value)}
+              onBlur={submitThotText}
             />
           </li>
         </Form>
 
-        {children.length ? <ThotList parent={_id} ideaId={ideaId} thots={children} /> : null}
+        {children.length ?
+          <ThotList parent={_id} ideaId={ideaId} thots={children} />
+        : null}
       </>
     )
   }
@@ -81,35 +73,48 @@ function Thot({ thot, inner }) {
   return (
     <>
       <Card>
-        <Form>
-          <ThotFormControl
-            value={thotText}
-            onChange={setThotText}
-            submitThotText={submitThotText}
-          />
-        </Form>
+        <Row>
+          <Col className="col-1">
+            <Button
+              variant="outline-secondary"
+              size="sm"
+              onClick={() => setCollapsed(!collapsed)}
+            >
+              {collapsed ? <span>&rarr;</span> : <span>&darr;</span>}
+            </Button>
+            <Button
+              variant="outline-secondary"
+              size="sm"
+              onClick={() => setShowNew(!showNew)}
+            >
+              {showNew ? <span>&#45;</span> : <span>&#43;</span>}
+            </Button>
+          </Col>
 
-        {children.length ? <ThotList parent={_id} ideaId={ideaId} thots={children} /> : null}
+          <Col>
+            <Form>
+              <Form.Control
+                plaintext
+                type="text"
+                value={thotText}
+                onChange={e => setThotText(e.target.value)}
+                onBlur={submitThotText}
+              />
+            </Form>
 
-
+            {!collapsed && children.length ?
+              <ThotList parent={_id} ideaId={ideaId} thots={children} />
+            : null}
+          </Col>
+        </Row>
+        
         {showNew ?
           <Row>
-            <Col>
-              <Form>
-                <NewThot ideaId={ideaId} parent={_id} />
-              </Form>
-            </Col>
-            <Col>
-              <Button variant="outline-secondary" size="sm" onClick={() => setShowNew(false)}>-</Button>
-            </Col>
+            <Form>
+              <NewThot ideaId={ideaId} parent={_id} />
+            </Form>
           </Row>
-        :
-          <Row>
-            <Col>
-              <Button variant="outline-secondary" size="sm" onClick={setShowNew}>+</Button>
-            </Col>
-          </Row>
-        }
+        : null}
       </Card>
     </>
   )

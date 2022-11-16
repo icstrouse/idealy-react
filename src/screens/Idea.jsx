@@ -68,24 +68,25 @@ function Idea() {
         <Thot key={thot._id} thot={thot} />
       )}
 
-      {showNew ?
-        <Row>
-          <Col>
+      <Row>
+        <Col className="col-1">
+          <Button
+            variant="outline-secondary"
+            size="sm"
+            onClick={() => setShowNew(!showNew)}
+          >
+            {showNew ? <span>&#45;</span> : <span>&#43;</span>}
+          </Button>
+        </Col>
+
+        <Col>
+          {showNew ? 
             <Form>
               <NewThot ideaId={ideaId} />
             </Form>
-          </Col>
-          <Col>
-            <Button variant="outline-secondary" size="sm" onClick={() => setShowNew(false)}>-</Button>
-          </Col>
-        </Row>
-      :
-        <Row>
-          <Col>
-            <Button variant="outline-secondary" size="sm" onClick={setShowNew}>+</Button>
-          </Col>
-        </Row>
-      }
+          : null}
+        </Col>
+      </Row>
     </Container>
   )
 }

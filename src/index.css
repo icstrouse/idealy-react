@@ -19,7 +19,8 @@ code {
 }
 
 .card {
-  border: 0ch;
+  border: 0.5px dotted red;
+  /* border: 0ch; */
 }
 
 .map-container {
