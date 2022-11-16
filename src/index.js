@@ -5,8 +5,10 @@ import { ApolloClient, InMemoryCache, ApolloProvider, gql } from '@apollo/client
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './index.css';
+import Idea from './screens/Idea';
 import Home from './screens/Home';
 import Review from './screens/Review';
+import Map from './screens/Map';
 import Develop from './screens/Develop';
 import reportWebVitals from './reportWebVitals';
 
@@ -22,10 +24,8 @@ root.render(
     <ApolloProvider client={client}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="review" element={<Review />} />
-          <Route path="develop" element={<Develop />}>
-            <Route path=":ideaId" element={<Develop />} />
+          <Route path="/" element={<Idea />}>
+            <Route path=":ideaId" element={<Idea />} />
           </Route>
         </Routes>
       </BrowserRouter>

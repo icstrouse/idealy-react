@@ -1,35 +1,33 @@
 import { useState } from 'react';
-import { useMutation, gql } from '@apollo/client';
+import { useMutation } from '@apollo/client';
+import { useGeolocated } from "react-geolocated";
 import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
 import Navbar from '../components/Navbar.jsx';
-
-const ADD_IDEA = gql`
-  mutation AddIdea($title: String!, $description: String!, $createdDate: String!, $createdPlace: [Float]!, $type: String!, $tags: [String], $isPublic: Boolean) {
-    addIdea(title: $title, description: $description, created_date: $createdDate, created_place: $createdPlace, type: $type, tags: $tags, isPublic: $isPublic) {
-      _id
-      title
-      description
-      created_date
-      created_place
-      type
-      tags
-      parent
-      isPublic
-      archived
-    }
-  }
-`;
+import { ADD_IDEA } from '../graphql';
 
 function Home() {
+  const [showDetail, setShowDetail] = useState(false);
+  const [showType, setShowType] = useState(false);
+  const [showTags, setShowTags] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [type, setType] = useState('');
   const [tags, setTags] = useState('');
 
   const [addIdea, { loading, error }] = useMutation(ADD_IDEA);
+
+  const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
+    positionOptions: {
+        enableHighAccuracy: false,
+    },
+    userDecisionTimeout: 5000,
+  });
+  console.log({coords})
 
   if (loading) return 'Submitting...';
   if (error) return `Submission error! ${error.message}`;
@@ -42,10 +40,13 @@ function Home() {
       title,
       description,
       createdDate: date.toString(),
-      createdPlace: [40.01431655883789, -104.9876937866211],
+      createdPlace: (isGeolocationAvailable && isGeolocationEnabled)
+        ? [coords.latitude, coords.longitude]
+        : [],
       type,
       tags: [tags],
       isPublic: true,
+      archived: false,
     }
     
     console.log('Submitting: ', variables);
@@ -55,52 +56,101 @@ function Home() {
     setDescription('');
     setType('');
     setTags('');
+    setShowDetail(false);
+    setShowType(false);
+    setShowTags(false);
+  }
+
+  const handleReset = () => {
+    // Add "Are you sure?" prompt
+    setTitle('');
+    setDescription('');
+    setType('');
+    setTags('');
+    setShowDetail(false);
+    setShowType(false);
+    setShowTags(false);
   }
 
   return (
     <>
       <Navbar activeKey="/" />
       <Container className="text-center">
-        <h1 className="m-4">Enter an Idea</h1>
+        <h1 className="m-4">What's on your mind?</h1>
 
         <Form className="m-4">
-          <Form.Group className="mb-3" controlId="formTitle">
-            <Form.Control
-              type="text"
-              placeholder="Enter Idea Here"
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-            />
-          </Form.Group>
+          <Row>
+            <Form.Group className="mb-3" controlId="formTitle">
+              <Form.Control
+                type="text"
+                value={title}
+                onChange={e => setTitle(e.target.value)}
+                />
+            </Form.Group>
+          </Row>
 
-          <Form.Group className="mb-3" controlId="formDescription">
-            <Form.Control
-              type="text"
-              placeholder="Describe your idea in more detail..."
-              value={description}
-              onChange={e => setDescription(e.target.value)}
-            />
-          </Form.Group>
+          <Row>
+            <Col>
+              {showDetail ?
+                <Form.Group className="mb-3" controlId="formDescription">
+                  <Form.Control
+                    type="text"
+                    placeholder="Describe your idea in more detail..."
+                    value={description}
+                    onChange={e => setDescription(e.target.value)}
+                  />
+                </Form.Group>
+              :
+                <Button onClick={setShowDetail}>
+                  Elaborate
+                </Button>
+              }
+            </Col>
 
-          <Form.Group className="mb-3" controlId="formType">
-            <Form.Select value={type} onChange={e => setType(e.target.value)}>
-              <option value="">Select a type</option>
-              <option value="Purchase">Purchase</option>
-              <option value="Adventure">Adventure</option>
-              <option value="Project">Project</option>
-            </Form.Select>
-          </Form.Group>
+            <Col>
+              {showType ?
+                <Form.Group className="mb-3" controlId="formType">
+                  <Form.Select value={type} onChange={e => setType(e.target.value)}>
+                    <option value="">Select a type</option>
+                    <option value="Purchase">Purchase</option>
+                    <option value="Adventure">Adventure</option>
+                    <option value="Project">Project</option>
+                  </Form.Select>
+                </Form.Group>
+              :
+                <Button onClick={setShowType}>
+                  Categorize
+                </Button>
+              }
+            </Col>
 
-          <Form.Group className="mb-3" controlId="formTags">
-            <Form.Control
-              type="text"
-              placeholder="Add tags"
-              value={tags}
-              onChange={e => setTags(e.target.value)}
-            />
-          </Form.Group>
+            <Col>
+              {showTags ?
+                <Form.Group className="mb-3" controlId="formTags">
+                  <Form.Control
+                    type="text"
+                    placeholder="Add tags"
+                    value={tags}
+                    onChange={e => setTags(e.target.value)}
+                  />
+                </Form.Group>
+              :
+                <Button onClick={setShowTags}>
+                  Add Tags
+                </Button>
+              }
+            </Col>
+          </Row>
 
-          <Button type="submit" onClick={handleSubmit}>Submit</Button>
+          <Row>
+            <Col>
+              <Button type="submit" onClick={handleSubmit}>Submit</Button>
+            </Col>
+
+            <Col>
+              <Button type="submit" onClick={handleReset}>Reset</Button>
+            </Col>
+          </Row>
         </Form>
       </Container>
     </>

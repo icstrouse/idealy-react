@@ -1,3 +1,5 @@
+@import '~leaflet/dist/leaflet.css';
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -14,4 +16,12 @@ code {
 
 * {
   font-size: 18px;
+}
+
+.card {
+  border: 0ch;
+}
+
+.map-container {
+  height: 500px;
 }

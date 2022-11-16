@@ -24,10 +24,10 @@ function Navbar({ activeKey }) {
               <Nav.Link className="nav-link" href="/review">Review</Nav.Link>
             </li>
             <li className="nav-item">
-              <Nav.Link className="nav-link" href="/develop">Develop</Nav.Link>
+              <Nav.Link className="nav-link" href="/map">Map</Nav.Link>
             </li>
             <li className="nav-item">
-              <Nav.Link className="nav-link" disabled>Extra</Nav.Link>
+              <Nav.Link className="nav-link" disabled>Coming soon...</Nav.Link>
             </li>
           </ul>
           <form className="d-flex" role="search">
