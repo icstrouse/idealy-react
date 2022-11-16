@@ -129,7 +129,7 @@ export const UPDATE_ARCHIVED = gql`
 
 // THOTS 
 export const ADD_THOT = gql`
-  mutation AddThot($text: String!, $ideaId: Int!, $parent: ID, $format: String) {
+  mutation AddThot($text: String!, $ideaId: ID!, $parent: ID, $format: String) {
     addThot(text: $text, ideaId: $ideaId, parent: $parent, format: $format) {
       _id
     }
@@ -137,8 +137,8 @@ export const ADD_THOT = gql`
 `;
 
 export const UPDATE_THOT_TEXT = gql`
-  mutation UpdateThotText($id: ID, $text: String) {
-    updateThot(_id: $id, text: $text) {
+  mutation UpdateThotText($_id: ID, $text: String) {
+    updateThot(_id: $_id, text: $text) {
       _id
       text
     }

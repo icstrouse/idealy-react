@@ -55,7 +55,7 @@ function Idea() {
             <Form.Control
               plaintext
               type="text"
-              placeholder="What's the big idea?"
+              placeholder="What's your idea?"
               value={ideaText}
               onChange={e => setIdeaText(e.target.value)}
               onBlur={e => submitIdeaText()}
@@ -72,7 +72,7 @@ function Idea() {
         <Row>
           <Col>
             <Form>
-              <NewThot ideaId={parseInt(ideaId)} />
+              <NewThot ideaId={ideaId} />
             </Form>
           </Col>
           <Col>

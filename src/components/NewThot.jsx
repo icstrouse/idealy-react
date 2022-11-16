@@ -10,7 +10,7 @@ function NewThot({ ideaId, parent, format }) {
   const [addThot, { loading, error }] = useMutation(ADD_THOT);
 
   const submitThot = () => {
-    const variables = { ideaId, parent, text: thotText, format }
+    const variables = { ideaId, parent, text: thotText, format: 'blah' }
     console.log('add thot: ', variables)
     addThot({ variables });
   }
