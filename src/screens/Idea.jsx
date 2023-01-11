@@ -1,93 +1,122 @@
 // PACKAGE IMPORTS
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useQuery, useMutation, gql } from '@apollo/client';
+import { useState, useCallback } from 'react'
+import { useParams } from 'react-router-dom'
+import { useQuery, useMutation, gql } from '@apollo/client'
 import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import Accordion from 'react-bootstrap/Accordion'
+import Form from 'react-bootstrap/Form'
+
 
 // PROJECT IMPORTS
-import Thot from '../components/Thot';
-import NewThot from '../components/NewThot';
-import {
-  GET_IDEA,
-  UPDATE_IDEA_TEXT,
-  ADD_IDEA,
-} from '../graphql';
+import Navbar from '../components/Navbar.jsx'
+import Thot from '../components/Thot'
+import NewThot from '../components/NewThot'
+import { GET_IDEA, UPDATE_IDEA_TEXT, UPDATE_THOT_ORDER } from '../graphql'
 
 function Idea() {
-  const { ideaId } = useParams();
+  const { ideaId } = useParams()
+
   const [ideaText, setIdeaText] = useState('')
   const [thots, setThots] = useState([])
-  const [showNew, setShowNew] = useState(false);
+  const [allOpen, setAllOpen] = useState(null)
+  const [showNew, setShowNew] = useState(false)
 
-  const [updateIdeaText] = useMutation(UPDATE_IDEA_TEXT);
+  const [updateIdeaText] = useMutation(UPDATE_IDEA_TEXT)
+  const [updateThotOrder] = useMutation(UPDATE_THOT_ORDER)
 
-  if (ideaId) {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const { loading, error } = useQuery(GET_IDEA, {
-      variables: { id: ideaId },
-      onCompleted: ({ idea }) => {
-        setIdeaText(idea.text);
-        idea.thots && setThots(idea.thots);
-      }
-    });
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error</p>;
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const moveListItem = useCallback(
+    (dragIndex, hoverIndex) => {
+      // console.log(`swap ${dragIndex} and ${hoverIndex}`)
+      const dragItem = thots[dragIndex]
+      console.log({dragItem})
+      const hoverItem = thots[hoverIndex]
+      // Swap places of dragItem and hoverItem in the thots array
+
+      setThots(thots => {
+        const updatedThots = [...thots]
+        updatedThots[dragIndex] = hoverItem
+        updatedThots[hoverIndex] = dragItem
+        return updatedThots
+      })
+    },
+    [thots],
+  )
+
+  const dropListItem = () => {
+    const thotIds = thots.map(thot => thot._id)
+    const update = { variables: { ideaId, thotIds }}
+    console.log(update)
+
+    updateThotOrder(update)
   }
 
-  const submitIdeaText = () => {
-    if (ideaId) {
-      updateIdeaText({ variables: { id: ideaId, text: ideaText }});
-    } else {
-      // add new idea 
+  const { loading, error } = useQuery(GET_IDEA, {
+    variables: { id: ideaId },
+    onCompleted: ({ idea }) => {
+      setIdeaText(idea.text)
+      idea.thots && setThots(idea.thots)
     }
+  })
+
+  if (loading) return <p>Loading...</p>
+  if (error) return <p>Error</p>
+
+  const submitIdeaText = (e) => {
+    console.log({e})
+    updateIdeaText({ variables: { id: ideaId, text: ideaText }})
   }
 
   return (
-    <Container>
-      <Row>
-        <Form>
-          <h3>
-            <Form.Control
-              plaintext
-              type="text"
-              placeholder="What's your idea?"
-              value={ideaText}
-              onChange={e => setIdeaText(e.target.value)}
-              onBlur={e => submitIdeaText()}
-            />
-          </h3>
-        </Form>
-      </Row>
+    <>
+      <Navbar activeKey="/" />
 
-      {thots.map(thot =>
-        <Thot key={thot._id} thot={thot} />
-      )}
+      <Container>
+        <Row>
+          <Form>
+            <h3>
+              <Form.Control
+                plaintext
+                type="text"
+                placeholder="Idea"
+                value={ideaText}
+                onChange={e => setIdeaText(e.target.value)}
+                onBlur={e => submitIdeaText()}
+              />
+            </h3>
+          </Form>
+        </Row>
 
-      <Row>
-        <Col className="col-1">
-          <Button
-            variant="outline-secondary"
-            size="sm"
-            onClick={() => setShowNew(!showNew)}
-          >
-            {showNew ? <span>&#45;</span> : <span>&#43;</span>}
-          </Button>
-        </Col>
+        <Row>
+          <Accordion alwaysOpen>
+            {thots.map((thot, index) =>
+              <Thot
+                key={thot._id}
+                index={index}
+                thot={thot}
+                all
+                moveListItem={moveListItem}
+                dropListItem={dropListItem}
+              />
+            )}
+          </Accordion>
+        </Row>
 
-        <Col>
-          {showNew ? 
-            <Form>
-              <NewThot ideaId={ideaId} />
-            </Form>
-          : null}
-        </Col>
-      </Row>
-    </Container>
+        <Row>
+          {/* use collapse here? */}
+          <Col>
+            {showNew ? 
+              <Form>
+                <NewThot ideaId={ideaId} />
+              </Form>
+            : null}
+          </Col>
+        </Row>
+      </Container>
+    </>
   )
 }
 

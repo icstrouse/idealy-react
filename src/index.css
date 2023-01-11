@@ -18,11 +18,6 @@ code {
   font-size: 18px;
 }
 
-.card {
-  border: 0.5px dotted red;
-  /* border: 0ch; */
-}
-
 .map-container {
   height: 500px;
 }

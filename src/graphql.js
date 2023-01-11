@@ -1,21 +1,14 @@
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client'
 
 
 // IDEAS
 export const ADD_IDEA = gql`
-  mutation AddIdea($text: String, $createdDate: String, $createdPlace: [Float], $type: String, $tags: [String], $isPublic: Boolean, $archived: Boolean) {
-    addIdea(text: $text, createdTime: $createdDate, createdPlace: $createdPlace, type: $type, tags: $tags, public: $isPublic, archived: $archived) {
+  mutation AddIdea($text: String) {
+    addIdea(text: $text) {
       _id
-      text
-      type
-      tags
-      archived
-      public
-      createdTime
-      createdPlace
     }
   }
-`;
+`
 
 export const GET_IDEAS = gql`
   query Ideas {
@@ -30,7 +23,7 @@ export const GET_IDEAS = gql`
       createdPlace
     }
   }
-`;
+`
 
 // REFACTOR THIS TO ADD THOT NESTING LEVELS BASED ON VALUE FOR IDEA REC
 export const GET_IDEA = gql`
@@ -70,7 +63,7 @@ export const GET_IDEA = gql`
       }
     }
   }
-`;
+`
 
 export const UPDATE_IDEA_TEXT = gql`
   mutation UpdateIdeaText($text: String, $id: ID) {
@@ -79,7 +72,7 @@ export const UPDATE_IDEA_TEXT = gql`
       text
     }
   }
-`;
+`
 
 export const UPDATE_TITLE = gql`
   mutation UpdateTitle($title: String, $id: ID) {
@@ -88,7 +81,7 @@ export const UPDATE_TITLE = gql`
       title
     }
   }
-`;
+`
 
 export const UPDATE_DESCRIPTION = gql`
   mutation UpdateDescription($description: String, $id: ID) {
@@ -97,7 +90,7 @@ export const UPDATE_DESCRIPTION = gql`
       description
     }
   }
-`;
+`
 
 export const UPDATE_TYPE = gql`
   mutation UpdateType($id: ID, $type: String) {
@@ -106,7 +99,7 @@ export const UPDATE_TYPE = gql`
       type
     }
   }
-`;
+`
 
 export const UPDATE_PUBLIC = gql`
   mutation UpdateIsPublic($id: ID, $isPublic: Boolean) {
@@ -115,7 +108,7 @@ export const UPDATE_PUBLIC = gql`
       public
     }
   }
-`;
+`
 
 export const UPDATE_ARCHIVED = gql`
   mutation UpdateArchived($id: ID, $archived: Boolean) {
@@ -124,7 +117,7 @@ export const UPDATE_ARCHIVED = gql`
       archived
     }
   }
-`;
+`
 
 
 // THOTS 
@@ -134,7 +127,7 @@ export const ADD_THOT = gql`
       _id
     }
   }
-`;
+`
 
 export const UPDATE_THOT_TEXT = gql`
   mutation UpdateThotText($_id: ID, $text: String) {
@@ -143,4 +136,17 @@ export const UPDATE_THOT_TEXT = gql`
       text
     }
   }
-`;
+`
+
+export const UPDATE_THOT_ORDER = gql`
+  mutation UpdateThotOrder($ideaId: ID!, $thotIds: [ID]!) {
+    updateThotOrder(ideaId: $ideaId, thotIds: $thotIds) {
+      _id
+      ideaId
+      parent
+      text
+      format
+      createdTime
+    }
+  }
+`

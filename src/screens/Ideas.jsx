@@ -17,12 +17,12 @@ function IdeaCard({ idea }) {
     <Card className="m-4">
       <Card.Body>
         <Card.Title className="pt-2">
-          <a href={`/develop/${idea._id}`}>
-            {idea.title}
+          <a href={`/idea/${idea._id}`}>
+            {idea.text}
           </a>
         </Card.Title>
-        <Card.Text className="card-text">{idea.description}</Card.Text>
-        <Card.Text className="card-text">{createdDate.toDateString()}</Card.Text>
+        {/* <Card.Text className="card-text">{idea.description}</Card.Text>
+        <Card.Text className="card-text">{createdDate.toDateString()}</Card.Text> */}
       </Card.Body>
     </Card>
   )
@@ -40,14 +40,11 @@ function Review() {
 
   return (
     <>
-      <Navbar activeKey="/review" />
+      <Navbar activeKey="/ideas" />
       <Container>
-        <h1 className="m-4">Review Ideas</h1>
-
         {ideas.map(idea =>
           <IdeaCard key={idea._id} idea={idea} />
         )}
-        
       </Container>
     </>
   );
